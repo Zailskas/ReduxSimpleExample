@@ -1,12 +1,29 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import 'react-native-gesture-handler';
+import {connect} from 'react-redux';
+import {showAll} from '../../store/actions/actions';
+import 'react-native-gesture-handler';
+import {carReducer} from '../../store/reducers/carReducer';
 
 class showScreen extends Component {
+  componentDidMount() {
+    this.props.showAll();
+  }
   render() {
+    const {cars} = this.props;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Cars</Text>
+        <ScrollView style={styles.carsContainer}>
+          {cars.cars.map((car, index) => (
+            <View style={styles.cars} key={index}>
+              <Text style={styles.make}>
+                {car.make} {car.model}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
       </View>
     );
   }
@@ -46,4 +63,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default showScreen;
+const mapStateToProps = (state) => {
+  return {
+    cars: state.cars,
+  };
+};
+export default connect(mapStateToProps, {showAll})(showScreen);
