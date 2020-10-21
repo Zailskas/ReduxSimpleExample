@@ -4,3 +4,6 @@ export function addCar(make, model, id) {
 export function showAll() {
   return {type: 'SHOW_ALL'};
 }
+export function deleteCar(id) {
+  return {type: 'DELETE_CAR', id: id};
+}

@@ -1,12 +1,59 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import 'react-native-gesture-handler';
+import {connect} from 'react-redux';
+import {addCar} from '../../store/actions/actions';
+import uuid from 'react-uuid';
 
 class addScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      make: '',
+      model: '',
+    };
+  }
+  handleSubmit = () => {
+    this.props.addCar(this.state.make, this.state.model, uuid());
+    this.setState({make: '', model: ''});
+  };
+  makeChange(make) {
+    this.setState({make});
+  }
+  modelChange(model) {
+    this.setState({model});
+  }
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Add car</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.input}
+            value={this.state.make}
+            placeholder="Make"
+            onChangeText={(text) => this.makeChange(text)}
+          />
+          <TextInput
+            style={styles.input}
+            value={this.state.model}
+            placeholder="Model"
+            onChangeText={(text) => this.modelChange(text)}
+          />
+        </View>
+        <View style={styles.addButtonContainer}>
+          <TouchableOpacity onPress={this.handleSubmit}>
+            <View style={styles.addButton}>
+              <Text style={styles.addButtonText}>INSERT</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -36,11 +83,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 5,
   },
-  addButton: {
+  addButtonText: {
     fontSize: 24,
     lineHeight: 24,
   },
-  addButtonContainer: {
+  addButton: {
     width: 120,
     height: 60,
     backgroundColor: '#6cc900',
@@ -48,6 +95,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
+  },
+  addButtonContainer: {
+    flex: 4,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   title: {
     paddingTop: 30,
@@ -58,4 +110,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default addScreen;
+const mapStateToProps = (state) => {
+  return {
+    cars: state.cars,
+  };
+};
+export default connect(mapStateToProps, {addCar})(addScreen);

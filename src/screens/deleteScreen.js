@@ -1,12 +1,43 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import 'react-native-gesture-handler';
+import {connect} from 'react-redux';
+import {showAll, deleteCar} from '../../store/actions/actions';
 import 'react-native-gesture-handler';
 
 class deleteScreen extends Component {
+  componentDidMount() {
+    this.props.showAll();
+  }
   render() {
+    const {cars} = this.props;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Delete car</Text>
+        <ScrollView style={styles.carsContainer}>
+          {cars.cars.map((car, index) => (
+            <View style={styles.cars} key={index}>
+              <View style={{flex: 1, justifyContent: 'center'}}>
+                <Text style={styles.make}>
+                  {car.make} {car.model}
+                </Text>
+              </View>
+              <View style={styles.deleteButton}>
+                <TouchableOpacity onPress={() => this.props.deleteCar(car.id)}>
+                  <View style={styles.addButtonContainer}>
+                    <Text style={styles.addButton}>DELETE</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
       </View>
     );
   }
@@ -62,5 +93,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 });
-
-export default deleteScreen;
+const mapStateToProps = (state) => {
+  return {
+    cars: state.cars,
+  };
+};
+export default connect(mapStateToProps, {showAll, deleteCar})(deleteScreen);
